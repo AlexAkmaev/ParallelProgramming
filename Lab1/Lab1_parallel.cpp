@@ -102,28 +102,27 @@ int main(int argc, char **argv)
             K = stol(argv[2]);
         }
     }
-	ierr += MPI_Init(&argc, &argv);
+    ierr += MPI_Init(&argc, &argv);
 
-	ierr += MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
-	ierr += MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
+    ierr += MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
+    ierr += MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
 
-	vector<double> utx(M * K);
+    vector<double> utx(M * K);
 
-	clock_t currentTime = clock();
-	Evaluate(utx, M, K);
-	currentTime = clock() - currentTime;
-	long double res = (long double) currentTime / CLOCKS_PER_SEC;
+    clock_t currentTime = clock();
+    Evaluate(utx, M, K);
+    currentTime = clock() - currentTime;
+    long double res = (long double) currentTime / CLOCKS_PER_SEC;
 
-	if (my_id == root_process)
-		cout << "time = " << setprecision(10) << res << endl;
+    if (my_id == root_process)
+        cout << "time = " << setprecision(10) << res << endl;
 
-    if (my_id == root_process) {
-        for(auto&& d : utx) {
-            cout << d << " ";
-        }
-        cout << endl;
-
-	}
-	ierr += MPI_Finalize();
-	return ierr;
+//    if (my_id == root_process) {
+//        for(auto&& d : utx) {
+//            cout << d << " ";
+//        }
+//        cout << endl;
+//    }
+    ierr += MPI_Finalize();
+    return ierr;
 }
