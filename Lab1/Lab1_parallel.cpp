@@ -83,7 +83,7 @@ void Evaluate(vector<double>& utx, const long M, const long K)
             long k = (my_id + 1) * steps_per_process;
             ierr += (k < K) ? MPI_Recv(&utx[m * K + k], 1, MPI_DOUBLE, root_process, return_data_tag, MPI_COMM_WORLD, &status) : 0;
         }
-	}
+        }
 }
 
 }  // anonymous namespace
@@ -117,13 +117,13 @@ int main(int argc, char **argv)
 	if (my_id == root_process)
 		cout << "time = " << setprecision(10) << res << endl;
 
-//    if (my_id == root_process) {
-//        for(auto&& d : utx) {
-//            cout << d << " ";
-//        }
-//        cout << endl;
-//
-//	}
+    if (my_id == root_process) {
+        for(auto&& d : utx) {
+            cout << d << " ";
+        }
+        cout << endl;
+
+	}
 	ierr += MPI_Finalize();
 	return ierr;
 }
