@@ -68,10 +68,5 @@ int main(int argc, char **argv)
 
 	Evaluate(utx, M, K);
 
-    for(auto&& d : utx) {
-        cout << d << " ";
-    }
-    cout << endl;
-
-	return 0;
+    return 0;
 }
