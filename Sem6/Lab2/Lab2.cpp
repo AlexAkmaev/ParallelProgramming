@@ -97,19 +97,19 @@ double integral(double lhs, double rhs)
 int main(int argc, char** argv)
 {
 	if (argc >= 3)
-    {
-        cerr << "Error: wrong number of arguments\n";
-        return EXIT_FAILURE;
-    }
+	{
+		cerr << "Error: wrong number of arguments\n";
+		return EXIT_FAILURE;
+	}
 
 	if (argc == 2)
 		precision = stod(argv[1]);
 
 	double I = integral(lhs, rhs);
 
-	cout << setprecision(string(argv[1]).length() + 2);
+	cout << setprecision(argc == 1 ? 6 : string(argv[1]).length() + 2);
 	cout << "∫sin(1/x)dx on [" << lhs << ", " << rhs << "] = " << I <<
-            "\nPrecision of calculation = " << precision << endl;
+	    "\nPrecision of calculation = " << precision << endl;
 
-    return EXIT_SUCCESS;
+	return EXIT_SUCCESS;
 }

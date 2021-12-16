@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <fstream>
 #include <cmath>
 #include "mpich/mpi.h"
 
@@ -54,9 +55,9 @@ void Evaluate(vector<double>& utx, const long M, const long K)
             else if (k == 0)
                 utx[K * m] = fi(m * h);
             else if (m == 1 || k == K - 1)
-                utx[K * m + k] += (ftx(k * tau, (m - 1) * h) - (utx[K * (m - 1) + k]- utx[K * (m - 1) + k - 1]) / tau) * h;
+                utx[K * m + k] += (ftx(k * tau, (m - 1) * h) - (utx[K * (m - 1) + k]- utx[K * (m - 1) + k - 1]) / tau) * h + utx[K * (m - 1) + k];
             else
-                utx[K * m + k] = (ftx(k * tau, (m - 1) * h) - (utx[K * (m - 1) + k + 1] - utx[K * (m - 1) + k - 1]) / (2.0 * tau)) * 2.0 * h + utx[K * (m - 1) + k];
+                utx[K * m + k] = (ftx(k * tau, (m - 1) * h) - (utx[K * (m - 1) + k + 1] - utx[K * (m - 1) + k - 1]) / (2.0 * tau)) * 2.0 * h + utx[K * (m - 2) + k];
             ++steps_passed;
         }
 
@@ -83,7 +84,7 @@ void Evaluate(vector<double>& utx, const long M, const long K)
             long k = (my_id + 1) * steps_per_process;
             ierr += (k < K) ? MPI_Recv(&utx[m * K + k], 1, MPI_DOUBLE, root_process, return_data_tag, MPI_COMM_WORLD, &status) : 0;
         }
-        }
+    }
 }
 
 }  // anonymous namespace
@@ -117,12 +118,18 @@ int main(int argc, char **argv)
     if (my_id == root_process)
         cout << "time = " << setprecision(10) << res << endl;
 
-//    if (my_id == root_process) {
-//        for(auto&& d : utx) {
-//            cout << d << " ";
-//        }
-//        cout << endl;
-//    }
+    if (my_id == root_process) {
+        std::ofstream os{"Net.txt"};
+        for (long m = 0; m < M; ++m)
+        {
+            for(long k = 0; k < K; ++k)
+            {
+                os << utx[m * K + k] << " ";
+            }
+            os << endl;
+        }
+        os.close();
+    }
     ierr += MPI_Finalize();
     return ierr;
 }
